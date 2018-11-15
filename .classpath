@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/json-20080701.jar"/>
+	<classpathentry kind="lib" path="lib/json-20171018.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/junit_junit_4_12/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/junit_junit_4_12/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/org_json_json_Release/json-20171018.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/server/server.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
