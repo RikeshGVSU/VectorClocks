@@ -7,7 +7,7 @@ import java.util.Set;
 public class VectorClock implements Clock {
 
     // suggested data structure ...
-     Map<String,Integer> clock = new Hashtable<String,Integer>();
+     public Map<String,Integer> clock = new Hashtable<String,Integer>();
 
 
     @Override
