@@ -179,6 +179,19 @@ public class VectorClockTests {
 	}
 	
 	@Test
+	public void compareWithEarlierEventMissingPids2() {
+		int[] refTimes = { 71, 70, 1 };
+		int[] incomingTimes = { 71, 70 };
+		VectorClock refClock = new VectorClock();
+		VectorClock incomingClock = new VectorClock();
+		for (int i = 0; i < refTimes.length; i++) {
+			refClock.addProcess(i, refTimes[i]);
+			if (i < incomingTimes.length)
+				incomingClock.addProcess(i, incomingTimes[i]);
+		}
+		Assert.assertFalse(refClock.happenedBefore(incomingClock));
+	}
+	@Test
 	public void compareWithLaterEventMissingEvents() {
 		int[] refTimes = { 71, 70, 5 };
 		int[] incomingTimes = { 71, 71, 2 };

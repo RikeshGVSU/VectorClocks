@@ -10,31 +10,14 @@ public class Try {
 
 	public static void main(String[] args) {
 		
-		
-		VectorClock a = new VectorClock();
-		a.addProcess(0, 1);
-		a.addProcess(1, 0);
-
-		VectorClock b = new VectorClock();
-		b.addProcess(0, 2);
-		b.addProcess(1, 0);
-
-		VectorClock c = new VectorClock();
-		c.addProcess(0, 0);
-		c.addProcess(1, 1);
-
-		VectorClock d = new VectorClock();
-		d.addProcess(0, 0);
-		d.addProcess(1, 2);
-
-		PriorityQueue<VectorClock> priorityQueue = new PriorityQueue<VectorClock>(new VectorClockComparator());
-		priorityQueue.add(d);
-		priorityQueue.add(a);
-		priorityQueue.add(b);
-		priorityQueue.add(c);
-
-		System.out.println(priorityQueue.toString());
-       // Assert.assertEquals(priorityQueue.toString(), "[{\"0\":0,\"1\":1}, {\"0\":0,\"1\":2}, {\"0\":1,\"1\":0}, {\"0\":2,\"1\":0}]");
+		int[] refTimes = { 71, 70, 5 };
+		VectorClock refClock = new VectorClock();
+		for (int i = 0; i < refTimes.length; i++) {
+			refClock.addProcess(i, refTimes[i]);
+		}
+		refClock.setClockFromString("{}");
+		//Assert.assertEquals(refClock.toString(), "{}");
+		System.out.println(refClock);
 
 	}
 

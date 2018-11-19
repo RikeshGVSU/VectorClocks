@@ -1,5 +1,6 @@
 package edu.gvsu.cis.cis656.clock;
 
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,9 @@ public class VectorClock implements Clock {
     @Override
     public boolean happenedBefore(Clock other) {
     	VectorClock oth = (VectorClock) other;
+    	if(oth.clock.size() < this.clock.size()) {
+    		return false;
+    	}
     	for(String key: oth.clock.keySet()) {
     		if (this.clock.containsKey(key)) {
     			if (this.clock.get(key) > oth.clock.get(key)) {
@@ -56,15 +60,24 @@ public class VectorClock implements Clock {
 //        	}
 //        	
 //        }
-        for(int i = 0; i < this.clock.size(); i++) {
-        	counter++;
-        	clockString =  clockString + "\""+ i + "\":" +  Integer.toString(clock.get(Integer.toString(i)));
-        	if(this.clock.size() != counter) {
-        		clockString =  clockString + ",";
-        	}
+        if (this.clock.size() > 0) {
+        	String maxKey = Collections.max(this.clock.keySet());
+        	for(int i = 0; i <= Integer.parseInt(maxKey); i++) {
+            	if (this.clock.containsKey(Integer.toString(i))) {
+            		counter++;
+                	clockString =  clockString + "\""+ i + "\":" +  Integer.toString(clock.get(Integer.toString(i)));
+                	if(this.clock.size() != counter) {
+                		clockString =  clockString + ",";
+                	}
+            	}
+            }
         }
+        
         clockString =  clockString + "}";
-        return clockString;
+        return clockString;  
+        
+        
+        
     }
 
     @Override

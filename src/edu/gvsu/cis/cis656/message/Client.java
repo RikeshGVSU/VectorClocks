@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
 import edu.gvsu.cis.cis656.clock.VectorClock;
@@ -15,20 +17,27 @@ public class Client {
 	
 	private String userName;
 	private static int myPid;
-	VectorClock myClock = new VectorClock();
+	VectorClock myClock;
 	MessageRecv messageRecv;
 	DatagramSocket socket = null;
 	InetAddress address = null;
-	int port = 8000;
-	
-	
-	public Client(String userName) {
+	int port;
+
+
+	public Client(String userName) throws SocketException, UnknownHostException {
 		this.userName = userName;
+		this.socket = new DatagramSocket();
+		myClock = new VectorClock();
+		this.address = InetAddress.getByName("localhost");
+		this.port = 8000;
 		Message message = new Message(0, this.userName, 0, null, this.userName);
 		Message.sendMessage(message, socket, address, port);
 		Message ackMessage = Message.receiveMessage(socket);
 		if (ackMessage.type == 1) {
 			myPid = ackMessage.pid;
+			myClock.addProcess(myPid, 0);
+			System.out.println("-- Start chat -- pid: " + myPid);
+			System.out.println("myClock: " + myClock.toString());
 		}
 		else if (ackMessage.type == 3) {
 			System.out.println("Username already taken.");
@@ -61,14 +70,26 @@ public class Client {
         		pq.add(msg);
         		Message topMsg = pq.peek();	
         		while (topMsg != null) {
-        		   	//if topMsg meets the print condition (see above description!) 
-        			if (sumClockValues(topMsg.ts) == sumClockValues(myClock)) {
-        			 //print topMsg 
-        			   System.out.println(topMsg.sender+": "+topMsg.message);
-        			   pq.poll();
-        			   myClock.update(topMsg.ts);
+        			int myClockTopMsgTime = 0;
+        			if(myClock.clock.containsKey(Integer.toString(topMsg.pid))) { myClockTopMsgTime = myClock.getTime(topMsg.pid); }
+        			boolean hasSeenAll = true;
+        			for (String key: topMsg.ts.clock.keySet()) {
+        				if (Integer.parseInt(key) != myPid && Integer.parseInt(key) != topMsg.pid) {
+        					if (myClock.clock.containsKey(key)) {
+        						if (topMsg.ts.getTime(Integer.parseInt(key)) > myClock.getTime(Integer.parseInt(key)) ) { hasSeenAll = false;}
+        					}else {
+        						hasSeenAll = false;
+        					}
+        				}
+        			}
+        			if (topMsg.ts.getTime(topMsg.pid) == myClockTopMsgTime + 1 && hasSeenAll) {
+        				System.out.println(topMsg.sender+": "+topMsg.message);
+         			   	pq.poll();
+         			   	myClock.update(topMsg.ts);
+         			   	topMsg = pq.peek();
+        		   }else {
+        			   topMsg = null;
         		   }
-        		   topMsg = pq.peek();
         		}
         	}
         }
@@ -83,6 +104,7 @@ public class Client {
 			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 			String message = in.readLine();
 			this.myClock.tick(myPid);
+			System.out.println("clock: " + myClock.toString());
 			Message myMessage = new Message(2, this.userName, this.myPid, this.myClock, message);
 			Message.sendMessage(myMessage, socket, address, port);
 		}
